@@ -1,4 +1,4 @@
-package me.agaman.kotlinfullstack.route
+package me.agaman.ramona.route
 
 enum class Route(val path: String) {
     API("api"),

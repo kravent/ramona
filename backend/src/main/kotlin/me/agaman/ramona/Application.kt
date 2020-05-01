@@ -1,4 +1,4 @@
-package me.agaman.kotlinfullstack
+package me.agaman.ramona
 
 import io.ktor.application.Application
 import io.ktor.application.call
@@ -19,9 +19,9 @@ import io.ktor.routing.post
 import io.ktor.routing.route
 import io.ktor.sessions.Sessions
 import kotlinx.html.*
-import me.agaman.kotlinfullstack.api.apiRouter
-import me.agaman.kotlinfullstack.features.*
-import me.agaman.kotlinfullstack.route.Route
+import me.agaman.ramona.api.apiRouter
+import me.agaman.ramona.features.*
+import me.agaman.ramona.route.Route
 
 fun Application.module() {
     install(DefaultHeaders)
@@ -83,7 +83,7 @@ fun Application.module() {
                         rel = LinkRel.stylesheet
                         href = "https://fonts.googleapis.com/icon?family=Material+Icons"
                     }
-                    title { +"Kotlin fullstack" }
+                    title { +"Ramona" }
                 }
                 body {
                     hiddenInput {

@@ -1,4 +1,4 @@
-rootProject.name = "kotlin-fullstack"
+rootProject.name = "ramona"
 
 include("common")
 include("frontend")

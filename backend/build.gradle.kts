@@ -4,7 +4,7 @@ plugins {
     kotlin("plugin.serialization") version "1.3.72"
 }
 
-group = "me.agaman.kotlinfullstack"
+group = "me.agaman.ramona"
 version = "1.0-SNAPSHOT"
 
 repositories {

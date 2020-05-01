@@ -1,4 +1,4 @@
-package me.agaman.kotlinfullstack.model
+package me.agaman.ramona.model
 
 import kotlinx.serialization.Serializable
 

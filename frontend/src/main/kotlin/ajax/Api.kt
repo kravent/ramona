@@ -15,8 +15,8 @@ import io.ktor.client.request.header
 import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.*
-import me.agaman.kotlinfullstack.route.ApiRoute
-import me.agaman.kotlinfullstack.route.Route
+import me.agaman.ramona.route.ApiRoute
+import me.agaman.ramona.route.Route
 import utils.CsrfTokenHandler
 import kotlin.browser.window
 

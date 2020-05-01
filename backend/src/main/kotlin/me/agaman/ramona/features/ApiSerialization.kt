@@ -1,4 +1,4 @@
-package me.agaman.kotlinfullstack.features
+package me.agaman.ramona.features
 
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
@@ -18,7 +18,7 @@ import io.ktor.utils.io.readRemaining
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.serializer
-import me.agaman.kotlinfullstack.Serializer
+import me.agaman.ramona.Serializer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

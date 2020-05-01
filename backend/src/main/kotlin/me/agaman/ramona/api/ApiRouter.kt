@@ -1,4 +1,4 @@
-package me.agaman.kotlinfullstack.api
+package me.agaman.ramona.api
 
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode
@@ -8,10 +8,10 @@ import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.route
-import me.agaman.kotlinfullstack.model.UserCreateRequest
-import me.agaman.kotlinfullstack.model.UserCreateResponse
-import me.agaman.kotlinfullstack.model.UserListResponse
-import me.agaman.kotlinfullstack.route.ApiRoute
+import me.agaman.ramona.model.UserCreateRequest
+import me.agaman.ramona.model.UserCreateResponse
+import me.agaman.ramona.model.UserListResponse
+import me.agaman.ramona.route.ApiRoute
 
 private val userList: MutableSet<String> = mutableSetOf()
 

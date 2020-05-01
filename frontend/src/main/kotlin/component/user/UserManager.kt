@@ -11,10 +11,10 @@ import materialui.components.circularprogress.circularProgress
 import materialui.components.grid.grid
 import materialui.lab.components.alert.alert
 import materialui.lab.components.alert.enums.AlertSeverity
-import me.agaman.kotlinfullstack.model.UserCreateRequest
-import me.agaman.kotlinfullstack.model.UserCreateResponse
-import me.agaman.kotlinfullstack.model.UserListResponse
-import me.agaman.kotlinfullstack.route.ApiRoute
+import me.agaman.ramona.model.UserCreateRequest
+import me.agaman.ramona.model.UserCreateResponse
+import me.agaman.ramona.model.UserListResponse
+import me.agaman.ramona.route.ApiRoute
 import react.*
 
 private data class UserManagerState(

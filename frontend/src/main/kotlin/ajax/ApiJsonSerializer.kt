@@ -9,7 +9,7 @@ import io.ktor.utils.io.core.Input
 import io.ktor.utils.io.core.readText
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.serializer
-import me.agaman.kotlinfullstack.Serializer
+import me.agaman.ramona.Serializer
 
 /**
  * TODO Substitute with KotlinxSerializer from ktor-client-serialization-js

@@ -1,7 +1,7 @@
 package component.store
 
 import kotlinx.serialization.Serializable
-import me.agaman.kotlinfullstack.Serializer
+import me.agaman.ramona.Serializer
 import org.w3c.dom.get
 import org.w3c.dom.set
 import react.RBuilder

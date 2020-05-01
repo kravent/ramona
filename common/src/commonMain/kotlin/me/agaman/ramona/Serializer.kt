@@ -1,7 +1,6 @@
-package me.agaman.kotlinfullstack
+package me.agaman.ramona
 
 import kotlinx.serialization.ImplicitReflectionSerializer
-import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.*
 import kotlinx.serialization.json.Json
