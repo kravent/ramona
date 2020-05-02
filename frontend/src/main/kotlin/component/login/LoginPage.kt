@@ -3,26 +3,14 @@ package component.login
 import ajax.Api
 import ajax.ApiForbiddenException
 import ajax.ApiUnauthoridedException
+import component.bootstrap.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.css.Color
-import kotlinx.css.color
-import kotlinx.css.properties.boxShadow
+import kotlinx.css.marginTop
 import kotlinx.css.px
-import kotlinx.html.InputType
-import kotlinx.html.js.onChangeFunction
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.js.onKeyPressFunction
 import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.events.KeyboardEvent
 import react.*
-import react.dom.button
-import react.dom.div
-import react.dom.label
 import styled.css
-import styled.styledDiv
-import styled.styledInput
-import utils.withEvent
 import utils.withTarget
 
 data class LoginPageProps(
@@ -33,22 +21,26 @@ val LoginPage = rFunction("LoginPage") { props: LoginPageProps ->
     var loading by useState(false)
     var user by useState("")
     var password by useState("")
-    var errorMessage by useState(null as String?)
+    var showError by useState(false)
+    var errorMessage by useState("")
 
     fun doLogin() {
         loading = true
+        showError = false
         MainScope().launch {
             try {
                 Api.login(user, password)
                 props.onUserLogged(user)
                 user = ""
                 password = ""
-                errorMessage = null
             } catch (e: ApiUnauthoridedException) {
+                showError = true
                 errorMessage = "User not found"
             } catch (e: ApiForbiddenException) {
+                showError = true
                 errorMessage = "CSRF token check error"
             } catch (e: Exception) {
+                showError = true
                 errorMessage = "Ooops! Something went wrong"
             } finally {
                 loading = false
@@ -56,54 +48,67 @@ val LoginPage = rFunction("LoginPage") { props: LoginPageProps ->
         }
     }
 
-    div {
-        errorMessage?.let {
-            styledDiv {
-                css {
-                    color = Color.red
-                }
-                +it
-            }
-        }
+    StyledContainer {
+        css { marginTop = 100.px }
+        Row {
+            attrs.className = "justify-content-md-center"
+            Col {
+                attrs.md = 6
 
-        div {
-            div {
-                label { +"User" }
-                styledInput {
-                    if (errorMessage != null) {
-                        css {
-                            boxShadow(color = Color.red, blurRadius = 3.px)
+                Form {
+                    attrs {
+                        onSubmit = { event ->
+                            event.preventDefault()
+                            doLogin()
                         }
                     }
-                    attrs {
-                        value = user
-                        disabled = loading
-                        onChangeFunction = withTarget<HTMLInputElement> { user = it.value }
-                        onKeyPressFunction = withEvent<KeyboardEvent>{ if (it.key == "Enter") doLogin() }
+
+                    Alert {
+                        attrs {
+                            dismissible = true
+                            show = showError
+                            variant = AlertVariant.danger
+                            onClose = { showError = false }
+                        }
+                        +errorMessage
                     }
-                }
-            }
-            div {
-                label { +"Password" }
-                styledInput {
-                    if (errorMessage != null) {
-                        css {
-                            boxShadow(color = Color.red, blurRadius = 3.px)
+
+                    FormGroup {
+                        attrs.controlId = "loginUserField"
+                        FormLabel { +"User" }
+                        FormControl {
+                            attrs {
+                                type = FormControlType.text
+                                value(user)
+                                disabled = loading
+                                isInvalid = showError
+                                onChange = withTarget<HTMLInputElement> { user = it.value }
+                            }
                         }
                     }
-                    attrs {
-                        type = InputType.password
-                        value = password
-                        disabled = loading
-                        onChangeFunction = withTarget<HTMLInputElement> { password = it.value }
-                        onKeyPressFunction = withEvent<KeyboardEvent>{ if (it.key == "Enter") doLogin() }
+
+                    FormGroup {
+                        attrs.controlId = "loginPasswordField"
+                        FormLabel { +"Password" }
+                        FormControl {
+                            attrs {
+                                type = FormControlType.password
+                                value(password)
+                                disabled = loading
+                                isInvalid = showError
+                                onChange = withTarget<HTMLInputElement> { password = it.value }
+                            }
+                        }
                     }
-                }
-            }
-            div {
-                button {
-                    attrs.onClickFunction = { doLogin() }
-                    +"Login"
+
+                    Button {
+                        attrs {
+                            type = ButtonType.submit
+                            variant = ButtonVariant.primary
+                            disabled = loading
+                        }
+                        +"Login"
+                    }
                 }
             }
         }
