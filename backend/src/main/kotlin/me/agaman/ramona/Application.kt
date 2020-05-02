@@ -77,11 +77,7 @@ fun Application.module() {
                     meta { charset = Charsets.UTF_8.name() }
                     link {
                         rel = LinkRel.stylesheet
-                        href = "https://fonts.googleapis.com/css?family=Roboto:300,400,500"
-                    }
-                    link {
-                        rel = LinkRel.stylesheet
-                        href = "https://fonts.googleapis.com/icon?family=Material+Icons"
+                        href = "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
                     }
                     title { +"Ramona" }
                 }

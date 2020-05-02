@@ -37,6 +37,9 @@ dependencies {
     implementation("org.jetbrains:kotlin-css:1.0.0-$kotlinWrapperVersion")
     implementation("org.jetbrains:kotlin-styled:1.0.0-$kotlinWrapperVersion")
 
+    // Bootstrap
+    implementation(npm("react-bootstrap", "1.0.1"))
+
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.3")
 
