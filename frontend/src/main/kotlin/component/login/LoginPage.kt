@@ -10,6 +10,7 @@ import kotlinx.css.marginTop
 import kotlinx.css.px
 import org.w3c.dom.HTMLInputElement
 import react.*
+import react.dom.img
 import styled.css
 import utils.withTarget
 
@@ -55,7 +56,15 @@ val LoginPage = rFunction("LoginPage") { props: LoginPageProps ->
             Col {
                 attrs.md = 6
 
-                Form {
+                img {
+                    attrs {
+                        src = "static/images/ramona.jpg"
+                        width = "100%"
+                    }
+                }
+
+                StyledForm {
+                    css { marginTop = 40.px }
                     attrs {
                         onSubmit = { event ->
                             event.preventDefault()
