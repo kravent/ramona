@@ -1,17 +1,15 @@
 package component.main
 
 import ajax.Api
+import component.adapters.LinkComponentHrefAdapter
+import component.bootstrap.*
 import component.store.LogoutStoreAction
 import component.store.StoreState
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.html.js.onClickFunction
 import react.*
-import react.dom.button
-import react.dom.div
-import react.dom.span
+import react.dom.img
 import react.redux.rConnect
-import react.router.dom.routeLink
 import redux.RAction
 import redux.WrapperAction
 
@@ -29,8 +27,8 @@ interface NavBarDispatchProps : RProps {
 }
 
 data class NavBarProps(
-    val title: String,
-    val backRoute: String?,
+    val title: String, // TODO check unused prop
+    val backRoute: String?, // TODO check unused prop
     val userName: String?,
     val onLogout: () -> Unit
 ) : RProps
@@ -43,14 +41,49 @@ val NavBar = rFunction("NavBarComponent") { props: NavBarProps ->
         }
     }
 
-    div {
-        props.backRoute?.let { routeLink(to = it) { +"Back" } }
-        span {
-            +props.title
+    Navbar {
+        attrs {
+            bg = "dark"
+            variant = NavbarVariant.dark
         }
-        button {
-            attrs.onClickFunction = { doLogout() }
-            +"Logout (${props.userName})"
+        NavbarBrand {
+            img {
+                attrs {
+                    src = "/static/images/ramona-small.jpg"
+                    width = "30px"
+                    height = "30px"
+                }
+            }
+            +" Ramona"
+        }
+        Nav {
+            attrs.className = "mr-auto"
+            NavLink {
+                attrs.`as` = LinkComponentHrefAdapter
+                attrs.href = "/"
+                +"Home"
+            }
+            NavLink {
+                attrs.`as` = LinkComponentHrefAdapter
+                attrs.href = "/standups"
+                +"Standups"
+            }
+        }
+        NavbarText {
+            attrs.className = "mr-1"
+            +"Signed in as:"
+        }
+        NavbarText {
+            attrs.className = "font-weight-bold text-light mr-2"
+            +(props.userName ?: "")
+        }
+        Button {
+            attrs {
+                size = ButtonSize.sm
+                variant = ButtonVariant.outline_info
+                onClick = { doLogout() }
+            }
+            +"Logout"
         }
     }
 }

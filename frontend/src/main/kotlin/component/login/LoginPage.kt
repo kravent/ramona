@@ -58,7 +58,7 @@ val LoginPage = rFunction("LoginPage") { props: LoginPageProps ->
 
                 img {
                     attrs {
-                        src = "static/images/ramona.jpg"
+                        src = "/static/images/ramona.jpg"
                         width = "100%"
                     }
                 }

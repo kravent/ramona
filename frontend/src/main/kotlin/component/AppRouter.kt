@@ -14,6 +14,8 @@ fun RBuilder.appRouter() = switch {
         }
     }
     route("*") {
-        h1 { +"ERROR: Page not found" }
+        mainPage(title = "Error") {
+            h1 { +"ERROR: Page not found" }
+        }
     }
 }
