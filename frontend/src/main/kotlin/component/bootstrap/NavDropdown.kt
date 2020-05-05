@@ -4,9 +4,6 @@ import react.RClass
 import react.ReactElement
 import styled.styled
 
-@JsModule("react-bootstrap/NavDropdown")
-private external val module: dynamic
-
 interface NavDropdownProps : BootstrapRProps {
     var active: Boolean
     var disabled: Boolean
@@ -17,5 +14,5 @@ interface NavDropdownProps : BootstrapRProps {
 }
 
 @Suppress("UnsafeCastFromDynamic")
-val NavDropdown: RClass<NavDropdownProps> = module.default
+val NavDropdown: RClass<NavDropdownProps> = Nav.asDynamic().Dropdown
 val StyledNavDropdown = styled(NavDropdown)

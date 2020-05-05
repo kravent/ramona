@@ -24,5 +24,5 @@ interface FormCheckProps : BootstrapRProps {
 var FormCheckProps.type by EnumProperty(FormCheckType.values())
 
 @Suppress("UnsafeCastFromDynamic")
-val FormCheck: RClass<FormCheckProps> = module.default
+val FormCheck: RClass<FormCheckProps> = Form.asDynamic().Check
 val StyledFormCheck = styled(FormCheck)

@@ -4,9 +4,6 @@ import org.w3c.dom.events.Event
 import react.RClass
 import styled.styled
 
-@JsModule("react-bootstrap/FormControl")
-private external val module: dynamic
-
 @Suppress("EnumEntryName")
 enum class FormControlSize { sm, lg }
 @Suppress("EnumEntryName")
@@ -32,5 +29,5 @@ fun FormControlProps.value(value: Array<Any>) = setRProp(this, "value", value)
 fun FormControlProps.value(value: Number) = setRProp(this, "value", value)
 
 @Suppress("UnsafeCastFromDynamic")
-val FormControl: RClass<FormControlProps> = module.default
+val FormControl: RClass<FormControlProps> = Form.asDynamic().Control
 val StyledFormControl = styled(FormControl)

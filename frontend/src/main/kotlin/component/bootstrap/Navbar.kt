@@ -32,5 +32,3 @@ var NavbarProps.variant by EnumProperty(NavbarVariant.values())
 @Suppress("UnsafeCastFromDynamic")
 val Navbar: RClass<NavbarProps> = module.default
 val StyledNavbar = styled(Navbar)
-val NavbarText: RClass<BootstrapRProps> = module.default.Text
-val StyledNavbarText = styled(NavbarText)

@@ -4,9 +4,6 @@ import org.w3c.dom.events.Event
 import react.RClass
 import styled.styled
 
-@JsModule("react-bootstrap/NavLink")
-private external val module: dynamic
-
 interface NavLinkProps : BootstrapRProps {
     var active: Boolean
     var `as`: Any
@@ -17,5 +14,5 @@ interface NavLinkProps : BootstrapRProps {
 }
 
 @Suppress("UnsafeCastFromDynamic")
-val NavLink: RClass<NavLinkProps> = module.default
+val NavLink: RClass<NavLinkProps> = Nav.asDynamic().Link
 val StyledNavLink = styled(NavLink)

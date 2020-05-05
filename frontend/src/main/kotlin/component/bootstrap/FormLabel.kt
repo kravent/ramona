@@ -3,9 +3,6 @@ package component.bootstrap
 import react.RClass
 import styled.styled
 
-@JsModule("react-bootstrap/FormLabel")
-private external val module: dynamic
-
 @Suppress("EnumEntryName")
 enum class FormLabelColumn { sm, lg }
 
@@ -16,5 +13,5 @@ fun FormLabelProps.column(column: Boolean) = setRProp(this, "column", column.toS
 fun FormLabelProps.column(column: FormLabelColumn) = setRProp(this, "column", column.toString())
 
 @Suppress("UnsafeCastFromDynamic")
-val FormLabel: RClass<FormLabelProps> = module.default
+val FormLabel: RClass<FormLabelProps> = Form.asDynamic().Label
 val StyledFormLabel = styled(FormLabel)
