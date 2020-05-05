@@ -6,14 +6,9 @@ import react.RProps
 import react.dom.div
 import react.rFunction
 
-interface MainPageProps : RProps {
-    var title: String
-    var backRoute: String?
-}
-
-val MainPage = rFunction("MainPage") { props: MainPageProps ->
+val MainPage = rFunction("MainPage") { props: RProps ->
     div {
-        navBar(props.title, props.backRoute)
+        navBar()
     }
     div {
         props.children()
@@ -21,11 +16,7 @@ val MainPage = rFunction("MainPage") { props: MainPageProps ->
 }
 
 fun RBuilder.mainPage(
-    title: String,
-    backRoute: String? = null,
-    handler: RHandler<MainPageProps>
+    handler: RHandler<RProps>
 ) = MainPage {
-    attrs.title = title
-    attrs.backRoute = backRoute
     handler()
 }

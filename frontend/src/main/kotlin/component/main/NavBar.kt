@@ -13,11 +13,6 @@ import react.redux.rConnect
 import redux.RAction
 import redux.WrapperAction
 
-interface ConnectedNavBarProps : RProps {
-    var title: String
-    var backRoute: String?
-}
-
 interface NavBarStateProps : RProps {
     var userName: String?
 }
@@ -27,8 +22,6 @@ interface NavBarDispatchProps : RProps {
 }
 
 data class NavBarProps(
-    val title: String, // TODO check unused prop
-    val backRoute: String?, // TODO check unused prop
     val userName: String?,
     val onLogout: () -> Unit
 ) : RProps
@@ -89,7 +82,7 @@ val NavBar = rFunction("NavBarComponent") { props: NavBarProps ->
 }
 
 val NavBarConnector =
-    rConnect<StoreState, RAction, WrapperAction, ConnectedNavBarProps, NavBarStateProps, NavBarDispatchProps, NavBarProps>(
+    rConnect<StoreState, RAction, WrapperAction, RProps, NavBarStateProps, NavBarDispatchProps, NavBarProps>(
         { state, _ ->
             userName = state.loggedUser
         },
@@ -100,10 +93,4 @@ val NavBarConnector =
 
 val ConnectedNavBar = NavBarConnector(NavBar)
 
-fun RBuilder.navBar(
-    title: String,
-    backRoute: String? = null
-): ReactElement = ConnectedNavBar {
-    attrs.title = title
-    attrs.backRoute = backRoute
-}
+fun RBuilder.navBar(): ReactElement = ConnectedNavBar { }
