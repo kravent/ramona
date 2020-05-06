@@ -4,6 +4,7 @@ import react.RClass
 import styled.styled
 
 interface FormGroupProps : BootstrapRProps {
+    var `as`: Any
     var controlId: String
 }
 

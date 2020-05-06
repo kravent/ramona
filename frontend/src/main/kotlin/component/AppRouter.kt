@@ -2,6 +2,7 @@ package component
 
 import component.main.errorPage
 import component.main.mainPage
+import component.standups.standupCreatePage
 import react.RBuilder
 import react.router.dom.route
 import react.router.dom.routeLink
@@ -18,5 +19,6 @@ fun RBuilder.appRouter() = switch {
             routeLink("/standups/create") { +"Create standup" }
         }
     }
+    route("/standups/create") { standupCreatePage() }
     route("*") { errorPage() }
 }

@@ -112,6 +112,7 @@ val LoginPage = rFunction("LoginPage") { props: LoginPageProps ->
 
                     Button {
                         attrs {
+                            className = "float-right"
                             type = ButtonType.submit
                             variant = ButtonVariant.primary
                             disabled = loading

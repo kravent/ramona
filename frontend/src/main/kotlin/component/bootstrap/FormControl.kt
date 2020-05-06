@@ -19,6 +19,7 @@ interface FormControlProps : BootstrapRProps {
     var isInvalid: Boolean
     var isValid: Boolean
     var onChange: (Event) -> Unit
+    var placeholder: String
     var plaintext: Boolean
     var readOnly: Boolean
 }

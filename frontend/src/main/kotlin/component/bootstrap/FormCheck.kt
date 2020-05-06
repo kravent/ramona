@@ -4,9 +4,6 @@ import react.RClass
 import react.ReactElement
 import styled.styled
 
-@JsModule("react-bootstrap/FormCheck")
-private external val module: dynamic
-
 @Suppress("EnumEntryName")
 enum class FormCheckType { radio, checkbox, switch }
 

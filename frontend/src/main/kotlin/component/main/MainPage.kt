@@ -1,17 +1,24 @@
 package component.main
 
+import component.bootstrap.Col
+import component.bootstrap.Container
+import component.bootstrap.Row
 import react.RBuilder
 import react.RHandler
 import react.RProps
-import react.dom.div
 import react.rFunction
 
 val MainPage = rFunction("MainPage") { props: RProps ->
-    div {
-        navBar()
-    }
-    div {
-        props.children()
+    navBar()
+    Container {
+        attrs.className = "mt-3"
+        Row {
+            attrs.className = "justify-content-md-center"
+            Col {
+                attrs.sm = 8
+                props.children()
+            }
+        }
     }
 }
 
