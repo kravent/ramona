@@ -1,15 +1,19 @@
 package component.standups
 
+import ajax.Api
 import component.bootstrap.*
 import component.main.mainPage
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import me.agaman.ramona.model.StandupCreateRequest
+import me.agaman.ramona.model.StandupCreateResponse
+import me.agaman.ramona.route.ApiRoute
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLSelectElement
 import react.*
 import react.dom.div
 import react.dom.option
+import react.router.dom.redirect
 import utils.withTarget
 
 fun RBuilder.generateHourOptions() {
@@ -23,31 +27,89 @@ fun RBuilder.generateHourOptions() {
     }
 }
 
+private data class StandupCreationValidation(
+    val name: Boolean = true,
+    val questions: Map<Int, Boolean> = emptyMap()
+) {
+    fun validQuestion(index: Int): Boolean = questions[index] ?: true
+    fun isValid(): Boolean = name && questions.values.all { it }
+}
+
 val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
     var loading by useState(false)
-    var standupName by useState("")
-    var startHour by useState(900)
-    var finishHour by useState(1100)
-    var questions by useState(listOf(""))
+    var showError by useState(false)
+    var errorMessage by useState("")
+    var standup by useState(StandupCreateRequest(
+        name = "",
+        startHour = 900,
+        finishHour = 1100,
+        questions = listOf("")
+    ))
+    var validation by useState(StandupCreationValidation())
+    var createdStandupId by useState(null as Int?)
+
+    fun isStandupValid(): Boolean {
+        var newValidation = StandupCreationValidation()
+        if (standup.name.isEmpty()) {
+            newValidation = newValidation.copy(name = false)
+        }
+        standup.questions.forEachIndexed { index, question ->
+            if (question.isEmpty()) {
+                newValidation = newValidation.copy(
+                    questions = newValidation.questions.toMutableMap().apply { this[index] = false }
+                )
+            }
+        }
+        validation = newValidation
+        return newValidation.isValid()
+    }
 
     fun saveStandup() {
-        loading = true
-        MainScope().launch {
-            delay(1000) // TODO remove debug delay
-            TODO("Not yet implemented")
+        if (isStandupValid()) {
+            showError = false
+            loading = true
+            MainScope().launch {
+                try {
+                    val response = Api.post<StandupCreateResponse>(ApiRoute.STANDUP_CREATE, standup)
+                    if (response.standup != null) {
+                        createdStandupId = response.standup?.id
+                    } else {
+                        showError = true
+                        errorMessage = response.error ?: "Something went wrong"
+                    }
+                } catch (e: Exception) {
+                    showError = true
+                    errorMessage = e.message ?: "Something went wrong"
+                } finally {
+                    loading = false
+                }
+            }
         }
     }
 
+    createdStandupId?.let { redirect(to = "/standup/view/$it") }
+
     mainPage {
+        Alert {
+            attrs {
+                dismissible = true
+                show = showError
+                variant = AlertVariant.danger
+                onClose = { showError = false }
+            }
+            +errorMessage
+        }
+
         FormGroup {
             attrs.controlId = "standupNameField"
             FormLabel { +"Standup name" }
             FormControl {
                 attrs {
                     type = FormControlType.text
-                    value(standupName)
+                    value(standup.name)
+                    isInvalid = !validation.name
                     disabled = loading
-                    onChange = withTarget<HTMLInputElement> { standupName = it.value }
+                    onChange = withTarget<HTMLInputElement> { standup = standup.copy(name = it.value) }
                 }
             }
         }
@@ -61,9 +123,9 @@ val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
                     attrs {
                         `as` = "select"
                         type = FormControlType.text
-                        value(startHour)
+                        value(standup.startHour)
                         disabled = loading
-                        onChange = withTarget<HTMLSelectElement> { startHour = it.value.toInt() }
+                        onChange = withTarget<HTMLSelectElement> { standup = standup.copy(startHour = it.value.toInt()) }
                     }
                     generateHourOptions()
                 }
@@ -76,9 +138,9 @@ val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
                     attrs {
                         `as` = "select"
                         type = FormControlType.text
-                        value(finishHour)
+                        value(standup.finishHour)
                         disabled = loading
-                        onChange = withTarget<HTMLSelectElement> { finishHour = it.value.toInt() }
+                        onChange = withTarget<HTMLSelectElement> { standup = standup.copy(finishHour = it.value.toInt()) }
                     }
                     generateHourOptions()
                 }
@@ -86,7 +148,7 @@ val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
         }
 
         FormLabel { +"Questions" }
-        for (question in questions.withIndex()) {
+        for (question in standup.questions.withIndex()) {
             FormGroup {
                 div("input-group") {
                     FormControl {
@@ -94,9 +156,13 @@ val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
                             type = FormControlType.text
                             placeholder = "Question ${question.index + 1}"
                             value(question.value)
+                            isInvalid = !validation.validQuestion(question.index)
                             disabled = loading
                             onChange = withTarget<HTMLInputElement> {
-                                questions = questions.toMutableList().apply { this[question.index] = it.value }
+                                standup = standup.copy(
+                                    questions = standup.questions.toMutableList()
+                                        .apply { this[question.index] = it.value }
+                                )
                             }
                         }
                     }
@@ -106,7 +172,10 @@ val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
                                 attrs {
                                     variant = ButtonVariant.outline_danger
                                     onClick = {
-                                        questions = questions.toMutableList().apply { this.removeAt(question.index) }
+                                        standup = standup.copy(
+                                            questions = standup.questions.toMutableList()
+                                                .apply { this.removeAt(question.index) }
+                                        )
                                     }
                                 }
                                 +"×"
@@ -116,13 +185,16 @@ val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
                 }
             }
         }
-        if (questions.size < 5) {
+        if (standup.questions.size < 5) {
             Button {
                 attrs {
                     variant = ButtonVariant.outline_secondary
                     size = ButtonSize.sm
                     onClick = {
-                        questions = questions.toMutableList().apply { this.add("") }
+                        standup = standup.copy(
+                            questions = standup.questions.toMutableList()
+                                .apply { this.add("") }
+                        )
                     }
                 }
                 +"Add question"
