@@ -12,6 +12,7 @@ import io.ktor.client.request.forms.FormBuilder
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.header
+import io.ktor.client.request.parameter
 import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.*
@@ -82,9 +83,10 @@ object Api {
         CsrfTokenHandler.setToken(csrfToken)
     }
 
-    suspend inline fun <reified T> get(apiRoute: ApiRoute): T = apiRequest {
+    suspend inline fun <reified T> get(apiRoute: ApiRoute, parameters: Map<String, Any?> = emptyMap()): T = apiRequest {
         method = HttpMethod.Get
         localUrl(apiRoute)
+        parameters.forEach { parameter(it.key, it.value) }
     }
 
     suspend inline fun <reified T> rawPost(apiRoute: ApiRoute, noinline block: FormBuilder.() -> Unit): T = apiRequest {

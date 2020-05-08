@@ -72,7 +72,7 @@ val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
                 try {
                     val response = Api.post<StandupCreateResponse>(ApiRoute.STANDUP_CREATE, standup)
                     response.standup?.let {
-                        history.push("/standup/view/${it.id}")
+                        history.push("/standups/view/${it.id}")
                     }
                     response.error?.let {
                         showError = true
