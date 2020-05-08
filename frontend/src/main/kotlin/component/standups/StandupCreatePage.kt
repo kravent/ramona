@@ -13,7 +13,7 @@ import org.w3c.dom.HTMLSelectElement
 import react.*
 import react.dom.div
 import react.dom.option
-import react.router.dom.redirect
+import react.router.dom.useHistory
 import utils.withTarget
 
 fun RBuilder.generateHourOptions() {
@@ -36,6 +36,7 @@ private data class StandupCreationValidation(
 }
 
 val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
+    val history = useHistory()
     var loading by useState(false)
     var showError by useState(false)
     var errorMessage by useState("")
@@ -46,7 +47,6 @@ val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
         questions = listOf("")
     ))
     var validation by useState(StandupCreationValidation())
-    var createdStandupId by useState(null as Int?)
 
     fun isStandupValid(): Boolean {
         var newValidation = StandupCreationValidation()
@@ -71,11 +71,12 @@ val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
             MainScope().launch {
                 try {
                     val response = Api.post<StandupCreateResponse>(ApiRoute.STANDUP_CREATE, standup)
-                    if (response.standup != null) {
-                        createdStandupId = response.standup?.id
-                    } else {
+                    response.standup?.let {
+                        history.push("/standup/view/${it.id}")
+                    }
+                    response.error?.let {
                         showError = true
-                        errorMessage = response.error ?: "Something went wrong"
+                        errorMessage = it
                     }
                 } catch (e: Exception) {
                     showError = true
@@ -86,8 +87,6 @@ val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
             }
         }
     }
-
-    createdStandupId?.let { redirect(to = "/standup/view/$it") }
 
     mainPage {
         Alert {
