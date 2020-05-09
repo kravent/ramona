@@ -17,11 +17,12 @@ import react.dom.h3
 data class StandupViewPageRProps(val standupId: Int) : RProps
 
 val StandupViewPage = rFunction("StandupViewPage") { props: StandupViewPageRProps ->
-    var loading by useState(true)
+    var loading by useState(false)
     var standup by useState(null as Standup?)
     var error by useState(null as String?)
 
-    useEffect {
+    useEffect(listOf()) {
+        loading = true
         MainScope().launch {
             try {
                 val response: StandupViewResponse = Api.get(ApiRoute.STANDUP_GET, mapOf("id" to props.standupId))
