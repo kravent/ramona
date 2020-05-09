@@ -7,6 +7,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import me.agaman.ramona.model.StandupCreateRequest
 import me.agaman.ramona.model.StandupCreateResponse
+import me.agaman.ramona.model.WeekDay
 import me.agaman.ramona.route.ApiRoute
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLSelectElement
@@ -29,10 +30,11 @@ fun RBuilder.generateHourOptions() {
 
 private data class StandupCreationValidation(
     val name: Boolean = true,
+    val days: Boolean = true,
     val questions: Map<Int, Boolean> = emptyMap()
 ) {
     fun validQuestion(index: Int): Boolean = questions[index] ?: true
-    fun isValid(): Boolean = name && questions.values.all { it }
+    fun isValid(): Boolean = name && days && questions.values.all { it }
 }
 
 val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
@@ -44,6 +46,7 @@ val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
         name = "",
         startHour = 900,
         finishHour = 1100,
+        days = setOf(WeekDay.Monday, WeekDay.Tuesday, WeekDay.Wednesday, WeekDay.Thursday, WeekDay.Friday),
         questions = listOf("")
     ))
     var validation by useState(StandupCreationValidation())
@@ -52,6 +55,9 @@ val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
         var newValidation = StandupCreationValidation()
         if (standup.name.isEmpty()) {
             newValidation = newValidation.copy(name = false)
+        }
+        if (standup.days.isEmpty()) {
+            newValidation = newValidation.copy(days = false)
         }
         standup.questions.forEachIndexed { index, question ->
             if (question.isEmpty()) {
@@ -108,7 +114,10 @@ val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
                     value(standup.name)
                     isInvalid = !validation.name
                     disabled = loading
-                    onChange = withTarget<HTMLInputElement> { standup = standup.copy(name = it.value) }
+                    onChange = withTarget<HTMLInputElement> {
+                        validation = validation.copy(name = true)
+                        standup = standup.copy(name = it.value)
+                    }
                 }
             }
         }
@@ -146,6 +155,40 @@ val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
             }
         }
 
+        FormGroup {
+            FormLabel { +"Days" }
+            div {
+                ButtonGroup {
+                    WeekDay.values().forEach { weekDay ->
+                        val isChecked = standup.days.contains(weekDay)
+                        Button {
+                            attrs {
+                                variant = when {
+                                    isChecked -> ButtonVariant.primary
+                                    validation.days -> ButtonVariant.outline_secondary
+                                    else -> ButtonVariant.outline_danger
+                                }
+                                disabled = loading
+                                onClick = {
+                                    validation = validation.copy(days = true)
+                                    standup = standup.copy(
+                                        days = standup.days.toMutableSet().apply {
+                                            if (isChecked) {
+                                                this.remove(weekDay)
+                                            } else {
+                                                this.add(weekDay)
+                                            }
+                                        }
+                                    )
+                                }
+                            }
+                            +weekDay.key
+                        }
+                    }
+                }
+            }
+        }
+
         FormLabel { +"Questions" }
         for (question in standup.questions.withIndex()) {
             FormGroup {
@@ -158,6 +201,10 @@ val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
                             isInvalid = !validation.validQuestion(question.index)
                             disabled = loading
                             onChange = withTarget<HTMLInputElement> {
+                                validation = validation.copy(
+                                    questions = validation.questions.toMutableMap()
+                                        .apply { this.remove(question.index) }
+                                )
                                 standup = standup.copy(
                                     questions = standup.questions.toMutableList()
                                         .apply { this[question.index] = it.value }

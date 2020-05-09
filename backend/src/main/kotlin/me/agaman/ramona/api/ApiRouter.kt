@@ -28,6 +28,7 @@ fun Route.apiRouter() {
                 name = request.name,
                 startHour = request.startHour,
                 finishHour = request.finishHour,
+                days = request.days,
                 questions = request.questions
             )
             standupList.add(standup)

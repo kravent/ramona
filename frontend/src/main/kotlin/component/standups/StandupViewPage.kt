@@ -50,6 +50,7 @@ val StandupViewPage = rFunction("StandupViewPage") { props: StandupViewPageRProp
         div { +"Name: ${standup?.name}" }
         div { +"Start hour: ${standup?.startHour}" }
         div { +"Finish hour: ${standup?.finishHour}" }
+        div { +"Days: ${standup?.days?.joinToString(" ") { it.key }}" }
         (standup?.questions ?: listOf("")).forEachIndexed { index, question ->
             div { +"Question ${index + 1}: $question" }
         }
