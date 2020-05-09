@@ -8,8 +8,7 @@ import component.main.mainPage
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import me.agaman.ramona.model.Standup
-import me.agaman.ramona.model.StandupListResponse
-import me.agaman.ramona.route.ApiRoute
+import me.agaman.ramona.route.ApiRoutes
 import react.*
 import react.dom.div
 import react.dom.h3
@@ -24,7 +23,7 @@ val StandupListPage = rFunction("StandupListPage") { _: RProps ->
         loading = true
         MainScope().launch {
             try {
-                val response: StandupListResponse = Api.get(ApiRoute.STANDUP_LIST)
+                val response = Api.get(ApiRoutes.STANDUP_LIST)
                 response.standups?.let { standups = it }
                 error = response.error
             } catch (e: Exception) {

@@ -8,8 +8,8 @@ import component.main.mainPage
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import me.agaman.ramona.model.Standup
-import me.agaman.ramona.model.StandupViewResponse
-import me.agaman.ramona.route.ApiRoute
+import me.agaman.ramona.model.StandupGetResponseParams
+import me.agaman.ramona.route.ApiRoutes
 import react.*
 import react.dom.div
 import react.dom.h3
@@ -25,7 +25,7 @@ val StandupViewPage = rFunction("StandupViewPage") { props: StandupViewPageRProp
         loading = true
         MainScope().launch {
             try {
-                val response: StandupViewResponse = Api.get(ApiRoute.STANDUP_GET, mapOf("id" to props.standupId))
+                val response = Api.get(ApiRoutes.STANDUP_GET.build(StandupGetResponseParams(props.standupId)))
                 standup = response.standup
                 error = response.error
             } catch (e: Exception) {

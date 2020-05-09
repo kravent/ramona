@@ -1,7 +1,33 @@
 package me.agaman.ramona.route
 
-enum class ApiRoute(val path: String) {
-    STANDUP_CREATE("standup/create"),
-    STANDUP_GET("standup/get"),
-    STANDUP_LIST("standup/list"),
+import me.agaman.ramona.model.*
+import kotlin.reflect.KClass
+
+interface ApiRoute {
+    val path: String
+}
+class GetApiRoute<ResponseClass : Any>(
+    override val path: String,
+    private val responseClass: KClass<ResponseClass>
+) : ApiRoute
+class AbstractGetApiRoute<ParamsClass: Any, ResponseClass : Any>(
+    val path: String,
+    private val responseClass: KClass<ResponseClass>,
+    private val routeBuilder: (params: ParamsClass) -> String
+) {
+    fun build(params: ParamsClass) = GetApiRoute(routeBuilder(params), responseClass)
+}
+class PostApiRoute<RequestClass : Any, ResponseClass : Any>(
+    override val path: String,
+    private val requestClass: KClass<RequestClass>,
+    private val responseClass: KClass<ResponseClass>
+) : ApiRoute
+
+object ApiRoutes {
+    val STANDUP_CREATE = PostApiRoute("standup/create", StandupCreateRequest::class, StandupCreateResponse::class)
+    val STANDUP_GET = AbstractGetApiRoute(
+        "standup/get/{id}",
+        StandupGetResponse::class
+    ) { params: StandupGetResponseParams -> "standup/get/${params.id}" }
+    val STANDUP_LIST = GetApiRoute("standup/list", StandupListResponse::class)
 }

@@ -17,6 +17,8 @@ import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.*
 import me.agaman.ramona.route.ApiRoute
+import me.agaman.ramona.route.GetApiRoute
+import me.agaman.ramona.route.PostApiRoute
 import me.agaman.ramona.route.Route
 import utils.CsrfTokenHandler
 import kotlin.browser.window
@@ -83,19 +85,28 @@ object Api {
         CsrfTokenHandler.setToken(csrfToken)
     }
 
-    suspend inline fun <reified T> get(apiRoute: ApiRoute, parameters: Map<String, Any?> = emptyMap()): T = apiRequest {
+    suspend inline fun <reified T : Any> get(
+        apiRoute: GetApiRoute<T>,
+        parameters: Map<String, Any?> = emptyMap()
+    ): T = apiRequest {
         method = HttpMethod.Get
         localUrl(apiRoute)
         parameters.forEach { parameter(it.key, it.value) }
     }
 
-    suspend inline fun <reified T> rawPost(apiRoute: ApiRoute, noinline block: FormBuilder.() -> Unit): T = apiRequest {
+    suspend inline fun <reified R : Any, reified T : Any> rawPost(
+        apiRoute: PostApiRoute<R, T>,
+        noinline block: FormBuilder.() -> Unit
+    ): T = apiRequest {
         method = HttpMethod.Post
         localUrl(apiRoute)
         formData(block)
     }
 
-    suspend inline fun <reified T> post(apiRoute: ApiRoute, data: Any): T = apiRequest {
+    suspend inline fun <reified R : Any, reified T : Any> post(
+        apiRoute: PostApiRoute<R, T>,
+        data: R
+    ): T = apiRequest {
         method = HttpMethod.Post
         localUrl(apiRoute)
         contentType(ContentType.Application.Json)

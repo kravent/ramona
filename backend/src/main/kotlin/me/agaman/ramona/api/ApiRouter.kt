@@ -9,12 +9,12 @@ import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.route
 import me.agaman.ramona.model.*
-import me.agaman.ramona.route.ApiRoute
+import me.agaman.ramona.route.ApiRoutes
 
 private val standupList: MutableSet<Standup> = mutableSetOf()
 
 fun Route.apiRouter() {
-    post(ApiRoute.STANDUP_CREATE.path) {
+    post(ApiRoutes.STANDUP_CREATE.path) {
         val request = call.receive<StandupCreateRequest>()
         val response = if (standupList.any { it.name == request.name }) {
             "An Standup already exists with the name '${request.name}'"
@@ -34,15 +34,15 @@ fun Route.apiRouter() {
         call.respond(response)
     }
 
-    get(ApiRoute.STANDUP_GET.path) {
+    get(ApiRoutes.STANDUP_GET.path) {
         val standupId = call.parameters["id"]?.toInt()
         val response = standupList.firstOrNull { it.id == standupId }
-            ?.let { StandupViewResponse(standup = it) }
-            ?: StandupViewResponse(error = "Standup not found")
+            ?.let { StandupGetResponse(standup = it) }
+            ?: StandupGetResponse(error = "Standup not found")
         call.respond(response)
     }
 
-    get(ApiRoute.STANDUP_LIST.path) {
+    get(ApiRoutes.STANDUP_LIST.path) {
         call.respond(StandupListResponse(standupList.sortedBy { it.id }))
     }
 
