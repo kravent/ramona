@@ -8,10 +8,7 @@ import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.route
-import me.agaman.ramona.model.Standup
-import me.agaman.ramona.model.StandupCreateRequest
-import me.agaman.ramona.model.StandupCreateResponse
-import me.agaman.ramona.model.StandupViewResponse
+import me.agaman.ramona.model.*
 import me.agaman.ramona.route.ApiRoute
 
 private val standupList: MutableSet<Standup> = mutableSetOf()
@@ -43,6 +40,10 @@ fun Route.apiRouter() {
             ?.let { StandupViewResponse(standup = it) }
             ?: StandupViewResponse(error = "Standup not found")
         call.respond(response)
+    }
+
+    get(ApiRoute.STANDUP_LIST.path) {
+        call.respond(StandupListResponse(standupList.sortedBy { it.id }))
     }
 
     route("{...}") {
