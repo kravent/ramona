@@ -39,7 +39,7 @@ private fun saveState(state: StoreState) {
     localStorage[LOCAL_STORAGE_KEY] = Serializer.json.stringify(StoreState.serializer(), state)
 }
 
-val Store = createStore<StoreState, RAction, dynamic>(
+val Store = createStore(
     ::storeReducer,
     loadState(),
     rEnhancer()

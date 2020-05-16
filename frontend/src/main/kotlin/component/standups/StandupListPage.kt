@@ -14,7 +14,7 @@ import react.dom.div
 import react.dom.h3
 import react.router.dom.routeLink
 
-val StandupListPage = rFunction("StandupListPage") { _: RProps ->
+val StandupListPage = functionalComponent { _: RProps ->
     var loading by useState(false)
     var error by useState(null as String?)
     var standups by useState(emptyList<Standup>())
@@ -65,4 +65,4 @@ val StandupListPage = rFunction("StandupListPage") { _: RProps ->
     }
 }
 
-fun RBuilder.standupListPage() = StandupListPage {}
+fun RBuilder.standupListPage() = child(StandupListPage)

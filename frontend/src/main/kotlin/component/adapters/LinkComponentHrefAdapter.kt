@@ -1,7 +1,7 @@
 package component.adapters
 
 import react.RProps
-import react.rFunction
+import react.functionalComponent
 import react.router.dom.LinkComponent
 
 interface LinkComponentHrefAdapterProps : RProps {
@@ -9,7 +9,7 @@ interface LinkComponentHrefAdapterProps : RProps {
     var className: String?
 }
 
-val LinkComponentHrefAdapter = rFunction("LinkComponentHrefAdapter") { props: LinkComponentHrefAdapterProps ->
+val LinkComponentHrefAdapter = functionalComponent { props: LinkComponentHrefAdapterProps ->
     child(LinkComponent::class) {
         attrs {
             to = props.href

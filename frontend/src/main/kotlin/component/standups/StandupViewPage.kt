@@ -16,7 +16,7 @@ import react.dom.h3
 
 data class StandupViewPageRProps(val standupId: Int) : RProps
 
-val StandupViewPage = rFunction("StandupViewPage") { props: StandupViewPageRProps ->
+val StandupViewPage = functionalComponent { props: StandupViewPageRProps ->
     var loading by useState(false)
     var standup by useState(null as Standup?)
     var error by useState(null as String?)
@@ -58,4 +58,4 @@ val StandupViewPage = rFunction("StandupViewPage") { props: StandupViewPageRProp
     }
 }
 
-fun RBuilder.standupViewPage(standupId: Int) = child(StandupViewPage, StandupViewPageRProps(standupId)) {}
+fun RBuilder.standupViewPage(standupId: Int) = child(StandupViewPage, StandupViewPageRProps(standupId))

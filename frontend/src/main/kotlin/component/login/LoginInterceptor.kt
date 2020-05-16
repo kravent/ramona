@@ -20,7 +20,7 @@ data class LoginInterceptorProps(
     val onLogin: (String) -> Unit
 ) : RProps
 
-val LoginInterceptor = rFunction("LoginInterceptor") { props: LoginInterceptorProps ->
+val LoginInterceptor = functionalComponent { props: LoginInterceptorProps ->
     if (props.isLogged) {
         props.children()
     } else {
@@ -38,7 +38,9 @@ val LoginInterceptorConnector =
         }
     )
 
-val ConnectedLoginInterceptor = LoginInterceptorConnector(LoginInterceptor)
+val ConnectedLoginInterceptor = LoginInterceptorConnector { props ->
+    child(LoginInterceptor, props)
+}
 
 fun RBuilder.loginInterceptor(handler: RHandler<RProps>) = ConnectedLoginInterceptor {
     handler()

@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    val kotlinWrapperVersion = "pre.104-kotlin-1.3.72"
+    val kotlinWrapperVersion = "pre.105-kotlin-1.3.72"
     val kotlinExtensions = "1.0.1"
     val reactVersion = "16.13.1"
     val reactRouterVersion = "5.1.2"

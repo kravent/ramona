@@ -3,12 +3,9 @@ package component.main
 import component.bootstrap.Col
 import component.bootstrap.Container
 import component.bootstrap.Row
-import react.RBuilder
-import react.RHandler
-import react.RProps
-import react.rFunction
+import react.*
 
-val MainPage = rFunction("MainPage") { props: RProps ->
+val MainPage = functionalComponent { props: RProps ->
     navBar()
     Container {
         attrs.className = "mt-3"
@@ -24,6 +21,4 @@ val MainPage = rFunction("MainPage") { props: RProps ->
 
 fun RBuilder.mainPage(
     handler: RHandler<RProps>
-) = MainPage {
-    handler()
-}
+) =  child(MainPage, handler = handler)

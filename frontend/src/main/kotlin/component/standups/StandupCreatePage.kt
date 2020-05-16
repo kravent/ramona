@@ -36,7 +36,7 @@ private data class StandupCreationValidation(
     fun isValid(): Boolean = name && days && questions.values.all { it }
 }
 
-val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
+val StandupCreatePage = functionalComponent { _: RProps ->
     val history = useHistory()
     var loading by useState(false)
     var showError by useState(false)
@@ -260,4 +260,4 @@ val StandupCreatePage = rFunction("StandupCreatePage") { _: RProps ->
     }
 }
 
-fun RBuilder.standupCreatePage() = StandupCreatePage {}
+fun RBuilder.standupCreatePage() = child(StandupCreatePage)

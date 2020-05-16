@@ -26,7 +26,7 @@ data class NavBarProps(
     val onLogout: () -> Unit
 ) : RProps
 
-val NavBar = rFunction("NavBarComponent") { props: NavBarProps ->
+val NavBar = functionalComponent { props: NavBarProps ->
     fun doLogout() {
         MainScope().launch {
             Api.logout()
@@ -91,6 +91,8 @@ val NavBarConnector =
         }
     )
 
-val ConnectedNavBar = NavBarConnector(NavBar)
+val ConnectedNavBar = NavBarConnector { props ->
+    child(NavBar, props)
+}
 
 fun RBuilder.navBar(): ReactElement = ConnectedNavBar { }

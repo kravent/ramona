@@ -18,7 +18,7 @@ data class LoginPageProps(
     val onUserLogged: (userName: String) -> Unit
 ) : RProps
 
-val LoginPage = rFunction("LoginPage") { props: LoginPageProps ->
+val LoginPage = functionalComponent { props: LoginPageProps ->
     var loading by useState(false)
     var user by useState("")
     var password by useState("")
@@ -125,4 +125,4 @@ val LoginPage = rFunction("LoginPage") { props: LoginPageProps ->
     }
 }
 
-fun RBuilder.loginPage(onUserLogged: (userName: String) -> Unit) = child(LoginPage, LoginPageProps(onUserLogged)) {}
+fun RBuilder.loginPage(onUserLogged: (userName: String) -> Unit) = child(LoginPage, LoginPageProps(onUserLogged))
