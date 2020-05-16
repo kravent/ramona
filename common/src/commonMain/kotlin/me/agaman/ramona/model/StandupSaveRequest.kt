@@ -3,6 +3,6 @@ package me.agaman.ramona.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class StandupCreateRequest(
+data class StandupSaveRequest(
     val standup: Standup
 )

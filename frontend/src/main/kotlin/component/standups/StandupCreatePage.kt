@@ -6,7 +6,7 @@ import component.main.mainPage
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import me.agaman.ramona.model.Standup
-import me.agaman.ramona.model.StandupCreateRequest
+import me.agaman.ramona.model.StandupSaveRequest
 import me.agaman.ramona.model.WeekDay
 import me.agaman.ramona.route.ApiRoutes
 import org.w3c.dom.HTMLInputElement
@@ -76,7 +76,7 @@ val StandupCreatePage = functionalComponent { _: RProps ->
             loading = true
             MainScope().launch {
                 try {
-                    val response = Api.post(ApiRoutes.STANDUP_CREATE, StandupCreateRequest(standup))
+                    val response = Api.post(ApiRoutes.STANDUP_SAVE, StandupSaveRequest(standup))
                     response.standup?.let {
                         history.push("/standups/view/${it.id}")
                     }

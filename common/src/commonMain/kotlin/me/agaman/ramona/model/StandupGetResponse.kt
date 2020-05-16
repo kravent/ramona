@@ -2,7 +2,7 @@ package me.agaman.ramona.model
 
 import kotlinx.serialization.Serializable
 
-data class StandupGetResponseParams(val id: Int)
+data class StandupGetRequest(val id: Int)
 
 @Serializable
 data class StandupGetResponse(
