@@ -22,6 +22,7 @@ import kotlinx.html.*
 import me.agaman.ramona.api.apiRouter
 import me.agaman.ramona.features.*
 import me.agaman.ramona.route.Route
+import me.agaman.ramona.storage.StorageHelper
 
 fun Application.module() {
     install(DefaultHeaders)
@@ -47,6 +48,8 @@ fun Application.module() {
             }
         }
     }
+
+    StorageHelper.initDatabase()
 
     install(Routing) {
         authenticate {

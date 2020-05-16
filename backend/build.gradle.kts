@@ -26,6 +26,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serializationVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serializationVersion")
     implementation("ch.qos.logback:logback-classic:1.2.3")
+    implementation("org.jetbrains.exposed:exposed-core:0.24.1")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.24.1")
+    implementation("com.h2database:h2:1.4.200")
 }
 
 tasks {

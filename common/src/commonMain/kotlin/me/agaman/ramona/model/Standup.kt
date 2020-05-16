@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Standup(
-    val id: Int,
+    val id: Int = 0,
     val name: String,
     val startHour: Int,
     val finishHour: Int,

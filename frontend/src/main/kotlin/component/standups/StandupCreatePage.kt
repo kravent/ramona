@@ -5,6 +5,7 @@ import component.bootstrap.*
 import component.main.mainPage
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import me.agaman.ramona.model.Standup
 import me.agaman.ramona.model.StandupCreateRequest
 import me.agaman.ramona.model.WeekDay
 import me.agaman.ramona.route.ApiRoutes
@@ -41,7 +42,7 @@ val StandupCreatePage = functionalComponent { _: RProps ->
     var loading by useState(false)
     var showError by useState(false)
     var errorMessage by useState("")
-    var standup by useState(StandupCreateRequest(
+    var standup by useState(Standup(
         name = "",
         startHour = 900,
         finishHour = 1100,
@@ -75,7 +76,7 @@ val StandupCreatePage = functionalComponent { _: RProps ->
             loading = true
             MainScope().launch {
                 try {
-                    val response = Api.post(ApiRoutes.STANDUP_CREATE, standup)
+                    val response = Api.post(ApiRoutes.STANDUP_CREATE, StandupCreateRequest(standup))
                     response.standup?.let {
                         history.push("/standups/view/${it.id}")
                     }
