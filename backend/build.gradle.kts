@@ -29,6 +29,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:0.24.1")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.24.1")
     implementation("com.h2database:h2:1.4.200")
+    implementation("org.koin:koin-ktor:2.1.5")
 }
 
 tasks {

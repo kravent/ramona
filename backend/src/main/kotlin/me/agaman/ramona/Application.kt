@@ -13,8 +13,11 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.sessions.Sessions
+import me.agaman.ramona.di.MainModule
 import me.agaman.ramona.features.*
 import me.agaman.ramona.storage.StorageHelper
+import org.koin.ktor.ext.Koin
+import org.koin.ktor.ext.inject
 
 fun Application.module() {
     install(DefaultHeaders)
@@ -40,8 +43,12 @@ fun Application.module() {
             }
         }
     }
+    install(Koin) {
+        modules(MainModule)
+    }
 
-    StorageHelper.initDatabase()
+    val storageHelper: StorageHelper by inject()
+    storageHelper.initDatabase()
 
     install(Routing) {
         mainRouter()

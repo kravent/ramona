@@ -9,9 +9,10 @@ import io.ktor.routing.post
 import io.ktor.routing.route
 import me.agaman.ramona.model.StandupSaveRequest
 import me.agaman.ramona.route.ApiRoutes
+import org.koin.ktor.ext.inject
 
 fun Route.apiRouter() {
-    val standupController by lazy { StandupController() }
+    val standupController: StandupController by inject()
 
     post(ApiRoutes.STANDUP_SAVE.path) { request: StandupSaveRequest ->
         call.respond(standupController.standupSave(request))

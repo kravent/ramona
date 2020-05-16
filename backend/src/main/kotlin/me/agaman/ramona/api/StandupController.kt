@@ -7,9 +7,9 @@ import me.agaman.ramona.model.StandupSaveResponse
 import me.agaman.ramona.storage.StandupSaveResult
 import me.agaman.ramona.storage.StandupStorage
 
-class StandupController {
-    private val standupStorage by lazy { StandupStorage() }
-
+class StandupController(
+    private val standupStorage: StandupStorage
+) {
     fun standupSave(request: StandupSaveRequest): StandupSaveResponse =
         when (val saveResult = standupStorage.save(request.standup)) {
             is StandupSaveResult.StandupSaveResultOk ->
