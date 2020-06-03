@@ -11,6 +11,10 @@ fun Sessions.Configuration.apiSessionsCookie() {
     }
 }
 
+data class User(
+    val name: String
+)
+
 data class ApiSession(
     val csrfToken: String = CsrfTokenProvider.generateRandomToken(),
     val currentUserName: String? = null
@@ -22,4 +26,6 @@ fun ApplicationCall.getCsrfToken(): String = getApiSession().csrfToken
 fun ApplicationCall.setApiSession(session: ApiSession) = sessions.set(session)
 fun ApplicationCall.updateApiSession(callback: (ApiSession) -> ApiSession) = sessions.set(callback(getApiSession()))
 fun ApplicationCall.deleteApiSession() = sessions.clear<ApiSession>()
+fun ApplicationCall.getCurrentUserOrNull(): User? = getApiSession().currentUserName?.let { User(it) }
+fun ApplicationCall.getCurrentUser(): User = getCurrentUserOrNull() ?: error("User is not logged")
 

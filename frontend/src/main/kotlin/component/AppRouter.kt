@@ -3,6 +3,7 @@ package component
 import component.main.errorPage
 import component.main.mainPage
 import component.standups.standupCreatePage
+import component.standups.standupFillPage
 import component.standups.standupListPage
 import component.standups.standupViewPage
 import react.RBuilder
@@ -14,6 +15,10 @@ import react.router.dom.switch
 
 interface IdProps : RProps {
     val id: Int
+}
+
+interface ExternalIdProps : RProps {
+    val externalId: String
 }
 
 fun RBuilder.appRouter() = switch {
@@ -33,5 +38,8 @@ fun RBuilder.appRouter() = switch {
         standupViewPage(props.match.params.id)
     }
     route("/standups/list") { standupListPage() }
+    route<ExternalIdProps>("/standups/fill/:externalId") { props ->
+        standupFillPage(props.match.params.externalId)
+    }
     route("*") { errorPage() }
 }

@@ -25,9 +25,18 @@ class PostApiRoute<RequestClass : Any, ResponseClass : Any>(
 
 object ApiRoutes {
     val STANDUP_SAVE = PostApiRoute("standup/save", StandupSaveRequest::class, StandupSaveResponse::class)
+
     val STANDUP_GET = AbstractGetApiRoute(
         "standup/get/{id}",
         StandupGetResponse::class
     ) { params: StandupGetRequest -> "standup/get/${params.id}" }
+
     val STANDUP_LIST = GetApiRoute("standup/list", StandupListResponse::class)
+
+    val STANDUP_PUBLIC_GET = AbstractGetApiRoute(
+        "standup/public_get/{externalId}",
+        StandupPublicGetResponse::class
+    ) { params: StandupPublicGetRequest -> "standup/public_get/${params.externalId}" }
+
+    val STANDUP_FILL = PostApiRoute("standup/fill", StandupFillRequest::class, StandupFillResponse::class)
 }

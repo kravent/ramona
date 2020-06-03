@@ -15,7 +15,7 @@ import io.ktor.routing.Routing
 import io.ktor.sessions.Sessions
 import me.agaman.ramona.di.MainModule
 import me.agaman.ramona.features.*
-import me.agaman.ramona.storage.StorageHelper
+import me.agaman.ramona.storage.StorageManager
 import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.inject
 
@@ -33,7 +33,7 @@ fun Application.module() {
     }
     install(Authentication) {
         form {
-            skipWhen { it.getApiSession().currentUserName != null }
+            skipWhen { it.getCurrentUserOrNull() != null }
             challenge { call.respond(HttpStatusCode.Unauthorized) }
             validate {
                 when (it.password) {
@@ -47,8 +47,8 @@ fun Application.module() {
         modules(MainModule)
     }
 
-    val storageHelper: StorageHelper by inject()
-    storageHelper.initDatabase()
+    val storageManager: StorageManager by inject()
+    storageManager.initDatabase()
 
     install(Routing) {
         mainRouter()

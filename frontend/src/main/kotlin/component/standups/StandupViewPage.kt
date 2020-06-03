@@ -13,6 +13,7 @@ import me.agaman.ramona.route.ApiRoutes
 import react.*
 import react.dom.div
 import react.dom.h3
+import react.router.dom.routeLink
 
 data class StandupViewPageRProps(val standupId: Int) : RProps
 
@@ -48,12 +49,16 @@ val StandupViewPage = functionalComponent { props: StandupViewPageRProps ->
             h3 { +"Loading..." }
         }
 
+        div { +"External ID: ${standup?.externalId}" }
         div { +"Name: ${standup?.name}" }
         div { +"Start hour: ${standup?.startHour}" }
         div { +"Finish hour: ${standup?.finishHour}" }
         div { +"Days: ${standup?.days?.joinToString(" ") { it.key }}" }
         (standup?.questions ?: listOf("")).forEachIndexed { index, question ->
             div { +"Question ${index + 1}: $question" }
+        }
+        standup?.externalId?.let {
+            div { routeLink("/standups/fill/$it") { +"Fill standup" } }
         }
     }
 }
