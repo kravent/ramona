@@ -30,6 +30,12 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:0.24.1")
     implementation("com.h2database:h2:1.4.200")
     implementation("org.koin:koin-ktor:2.1.5")
+    implementation("org.koin:koin-test:2.1.5")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.2")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testImplementation("io.mockk:mockk:1.10.0")
 }
 
 tasks {
@@ -41,6 +47,9 @@ tasks {
     }
     processResources {
         dependsOn(":frontend:browserDevelopmentWebpack") // TODO use production build when needed
+    }
+    test {
+        useJUnitPlatform()
     }
 }
 
