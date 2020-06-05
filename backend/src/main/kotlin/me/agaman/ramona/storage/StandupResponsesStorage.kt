@@ -7,7 +7,9 @@ import me.agaman.ramona.features.User
 import me.agaman.ramona.model.Standup
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class StandupResponsesStorage {
@@ -15,8 +17,20 @@ class StandupResponsesStorage {
         StandupResponsesTable.insert {
             it[standupId] = standup.id
             it[user] = currentUser.name
-            it[responsesJson] = Serializer.json.stringify(MapSerializer(Int.serializer(), String.serializer()), responses)
+            it[responsesJson] = Serializer.json.stringify(RESPONSES_SERIALIZER, responses)
         }
+    }
+
+    fun find(standup: Standup): List<Pair<String, Map<Int, String>>> = transaction {
+        StandupResponsesTable.select { StandupResponsesTable.standupId eq standup.id }
+            .map { it.toStandupResponsesPair() }
+    }
+
+    private fun ResultRow.toStandupResponsesPair(): Pair<String, Map<Int, String>> =
+        this[StandupResponsesTable.user] to Serializer.json.parse(RESPONSES_SERIALIZER, this[StandupResponsesTable.responsesJson])
+
+    companion object {
+        private val RESPONSES_SERIALIZER = MapSerializer(Int.serializer(), String.serializer())
     }
 }
 
