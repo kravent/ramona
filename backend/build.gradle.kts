@@ -42,11 +42,11 @@ tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-    }
     processResources {
-        dependsOn(":frontend:browserDevelopmentWebpack") // TODO use production build when needed
+        val tasksNeedingAssets = setOf("run", "assembleDist", "distTar", "distZip", "installDist")
+        if (gradle.startParameter.taskNames.any { tasksNeedingAssets.contains(it) }) {
+            dependsOn(":frontend:browserDevelopmentWebpack") // TODO use production build when needed
+        }
     }
     test {
         useJUnitPlatform()
