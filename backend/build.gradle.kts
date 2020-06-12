@@ -44,6 +44,9 @@ tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
     processResources {
         val tasksNeedingAssets = setOf("run", "assembleDist", "distTar", "distZip", "installDist")
         if (gradle.startParameter.taskNames.any { tasksNeedingAssets.contains(it) }) {

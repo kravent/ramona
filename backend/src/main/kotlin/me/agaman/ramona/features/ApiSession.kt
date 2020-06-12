@@ -2,6 +2,7 @@ package me.agaman.ramona.features
 
 import io.ktor.application.ApplicationCall
 import io.ktor.sessions.*
+import org.koin.ktor.ext.get
 
 private const val SEVEN_DAYS_IN_SECONDS: Long = 7 * 24 * 3600
 
@@ -16,11 +17,25 @@ data class User(
 )
 
 data class ApiSession(
-    val csrfToken: String = CsrfTokenProvider.generateRandomToken(),
-    val currentUserName: String? = null
+    val csrfToken: String,
+    val currentUserName: String?
 )
 
-fun ApplicationCall.getApiSession(): ApiSession = sessions.getOrSet { ApiSession() }
+class ApiSessionProvider(
+    private val csrfTokenProvider: CsrfTokenProvider
+) {
+    fun createSession(): ApiSession = ApiSession(
+        csrfToken = csrfTokenProvider.generateRandomToken(),
+        currentUserName = null
+    )
+
+    fun createSession(currentUserName: String): ApiSession = ApiSession(
+        csrfToken = csrfTokenProvider.generateRandomToken(),
+        currentUserName = currentUserName
+    )
+}
+
+fun ApplicationCall.getApiSession(): ApiSession = sessions.getOrSet { this.application.get<ApiSessionProvider>().createSession() }
 fun ApplicationCall.getCsrfToken(): String = getApiSession().csrfToken
 
 fun ApplicationCall.setApiSession(session: ApiSession) = sessions.set(session)

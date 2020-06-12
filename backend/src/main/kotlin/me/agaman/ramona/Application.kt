@@ -19,7 +19,7 @@ import me.agaman.ramona.storage.StorageManager
 import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.inject
 
-fun Application.module() {
+fun Application.module(skipKoinInstall: Boolean = false) {
     install(DefaultHeaders)
     install(CallLogging)
     install(ContentNegotiation) {
@@ -43,8 +43,10 @@ fun Application.module() {
             }
         }
     }
-    install(Koin) {
-        modules(MainModule)
+    if (!skipKoinInstall) {
+        install(Koin) {
+            modules(MainModule)
+        }
     }
 
     val storageManager: StorageManager by inject()

@@ -51,10 +51,14 @@ class Csrf(config: Configuration) {
     }
 }
 
-object CsrfTokenProvider {
+interface CsrfTokenProvider {
+    fun generateRandomToken(): String
+}
+
+class CsrfTokenProviderImpl : CsrfTokenProvider {
     private val secureRandom = SecureRandom()
 
-    fun generateRandomToken(): String =
+    override fun generateRandomToken(): String =
         ByteArray(256)
             .also { secureRandom.nextBytes(it) }
             .let { Base64.getEncoder().encodeToString(it) }
