@@ -1,7 +1,7 @@
 package me.agaman.ramona.di
 
 import me.agaman.ramona.api.StandupController
-import me.agaman.ramona.features.ApiSessionProvider
+import me.agaman.ramona.features.session.ApiSessionProvider
 import me.agaman.ramona.features.CsrfTokenProvider
 import me.agaman.ramona.features.CsrfTokenProviderImpl
 import me.agaman.ramona.helpers.UuidHelper

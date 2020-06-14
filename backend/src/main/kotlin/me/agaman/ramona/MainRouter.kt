@@ -15,11 +15,12 @@ import io.ktor.routing.post
 import io.ktor.routing.route
 import kotlinx.html.*
 import me.agaman.ramona.api.apiRouter
-import me.agaman.ramona.features.ApiSessionProvider
 import me.agaman.ramona.features.deleteApiSession
 import me.agaman.ramona.features.getCsrfToken
+import me.agaman.ramona.features.session.ApiSessionProvider
 import me.agaman.ramona.features.setApiSession
 import me.agaman.ramona.route.Route
+import me.agaman.ramona.user.User
 import org.koin.ktor.ext.inject
 
 fun Routing.mainRouter() {
@@ -28,7 +29,7 @@ fun Routing.mainRouter() {
     authenticate {
         post(Route.LOGIN.path) {
             val currentUser = call.principal<UserIdPrincipal>() ?: error("No auth found")
-            call.setApiSession(apiSessionProvider.createSession(currentUserName = currentUser.name))
+            call.setApiSession(apiSessionProvider.createSession(User(currentUser.name)))
             call.respondText { call.getCsrfToken() }
         }
 

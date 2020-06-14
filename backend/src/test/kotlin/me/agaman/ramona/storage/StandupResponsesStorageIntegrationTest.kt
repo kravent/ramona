@@ -2,7 +2,7 @@ package me.agaman.ramona.storage
 
 import io.mockk.every
 import io.mockk.mockk
-import me.agaman.ramona.features.User
+import me.agaman.ramona.user.User
 import me.agaman.ramona.model.Standup
 import me.agaman.ramona.test.RamonaIntegrationTest
 import org.junit.jupiter.api.Test

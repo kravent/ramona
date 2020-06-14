@@ -1,6 +1,6 @@
 package me.agaman.ramona.api
 
-import me.agaman.ramona.features.User
+import me.agaman.ramona.user.User
 import me.agaman.ramona.model.*
 import me.agaman.ramona.storage.StandupResponsesStorage
 import me.agaman.ramona.storage.StandupSaveResult

@@ -3,7 +3,7 @@ package me.agaman.ramona.storage
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import me.agaman.ramona.Serializer
-import me.agaman.ramona.features.User
+import me.agaman.ramona.user.User
 import me.agaman.ramona.model.Standup
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column
