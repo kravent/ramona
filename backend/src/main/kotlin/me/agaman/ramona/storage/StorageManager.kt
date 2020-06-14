@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.transactions.transaction
 
 open class StorageManager {
-    protected open val databaseUrl = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"
+    protected open val databaseUrl = "jdbc:h2:./build/development"
     private var isInitialized = false
 
     protected val tables: Array<Table> = arrayOf(
