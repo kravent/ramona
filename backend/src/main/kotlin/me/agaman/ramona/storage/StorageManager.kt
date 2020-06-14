@@ -7,6 +7,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 open class StorageManager {
     protected open val databaseUrl = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"
+    private var isInitialized = false
 
     protected val tables: Array<Table> = arrayOf(
         SessionTable,
@@ -14,10 +15,13 @@ open class StorageManager {
         StandupResponsesTable
     )
 
-    fun initDatabase() {
-        Database.connect(databaseUrl)
-        transaction {
-            SchemaUtils.create(*tables)
+    open fun initDatabase() {
+        if (!isInitialized) {
+            Database.connect(databaseUrl)
+            transaction {
+                SchemaUtils.createMissingTablesAndColumns(*tables)
+            }
+            isInitialized = true
         }
     }
 }
