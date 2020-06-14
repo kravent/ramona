@@ -9,6 +9,7 @@ open class StorageManager {
     protected open val databaseUrl = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"
 
     protected val tables: Array<Table> = arrayOf(
+        SessionTable,
         StandupTable,
         StandupResponsesTable
     )

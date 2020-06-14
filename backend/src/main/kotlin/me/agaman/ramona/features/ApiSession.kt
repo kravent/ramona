@@ -2,12 +2,13 @@ package me.agaman.ramona.features
 
 import io.ktor.application.ApplicationCall
 import io.ktor.sessions.*
+import me.agaman.ramona.features.session.DatabaseSessionStorage
 import org.koin.ktor.ext.get
 
 private const val SEVEN_DAYS_IN_SECONDS: Long = 7 * 24 * 3600
 
 fun Sessions.Configuration.apiSessionsCookie() {
-    cookie<ApiSession>("session", SessionStorageMemory()) {
+    cookie<ApiSession>("session", DatabaseSessionStorage()) {
         cookie.maxAgeInSeconds = SEVEN_DAYS_IN_SECONDS
     }
 }

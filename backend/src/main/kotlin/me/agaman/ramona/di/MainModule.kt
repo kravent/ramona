@@ -5,6 +5,7 @@ import me.agaman.ramona.features.ApiSessionProvider
 import me.agaman.ramona.features.CsrfTokenProvider
 import me.agaman.ramona.features.CsrfTokenProviderImpl
 import me.agaman.ramona.helpers.UuidHelper
+import me.agaman.ramona.storage.SessionStorage
 import me.agaman.ramona.storage.StandupResponsesStorage
 import me.agaman.ramona.storage.StandupStorage
 import me.agaman.ramona.storage.StorageManager
@@ -18,4 +19,5 @@ val MainModule = module {
     single { UuidHelper() }
     single { ApiSessionProvider(get()) }
     single { CsrfTokenProviderImpl() as CsrfTokenProvider }
+    single { SessionStorage() }
 }
