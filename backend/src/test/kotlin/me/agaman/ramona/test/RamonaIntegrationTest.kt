@@ -1,9 +1,14 @@
 package me.agaman.ramona.test
 
-import io.ktor.server.testing.TestApplicationEngine
-import io.ktor.server.testing.withTestApplication
+import io.ktor.client.request.forms.FormDataContent
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
+import io.ktor.http.Parameters
+import io.ktor.server.testing.*
 import me.agaman.ramona.di.MainModule
 import me.agaman.ramona.module
+import me.agaman.ramona.route.Route
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -37,5 +42,25 @@ internal abstract class RamonaIntegrationTest : KoinTest {
         testStorageManager.truncateTables()
     }
 
-    fun <R> withKtorApp(test: TestApplicationEngine.() -> R): R = withTestApplication({ module(skipKoinInstall = true) }, test)
+    fun withKtorApp(test: TestApplicationEngine.() -> Unit) = withTestApplication({ module(skipKoinInstall = true) }) {
+        cookiesSession {
+            test()
+        }
+    }
+
+    fun withLoggedKtorApp(test: TestApplicationEngine.() -> Unit) = withKtorApp {
+        handleRequest(HttpMethod.Post, Route.LOGIN.path) {
+            addHeader("X-CSRF", TestCsrfTokenProvider.CSRF_TOKEN)
+            addHeader(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded.toString())
+            setBody(
+                FormDataContent(
+                    Parameters.build {
+                        set("user", "any_user")
+                        set("password", "testing")
+                    }
+                ).bytes()
+            )
+        }
+        test()
+    }
 }

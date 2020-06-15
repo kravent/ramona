@@ -33,7 +33,7 @@ internal class MainRouterIntegrationTest : RamonaIntegrationTest() {
         "${TestCsrfTokenProvider.CSRF_TOKEN}, invalid_password, 401, ",
         "${TestCsrfTokenProvider.CSRF_TOKEN}, testing,          200, ${TestCsrfTokenProvider.CSRF_TOKEN}"
     ])
-    fun `post login`(csrf: String, password: String, expectedHttpStatusCode: Int, expectedResponseBody: String?) {
+    fun `post login responses`(csrf: String, password: String, expectedHttpStatusCode: Int, expectedResponseBody: String?) {
         withKtorApp {
             handleRequest(HttpMethod.Post, Route.LOGIN.path) {
                 addHeader("X-CSRF", csrf)
@@ -46,6 +46,22 @@ internal class MainRouterIntegrationTest : RamonaIntegrationTest() {
                         }
                     ).bytes()
                 )
+            }.apply {
+                assertEquals(HttpStatusCode.fromValue(expectedHttpStatusCode), response.status())
+                assertEquals(expectedResponseBody, response.content)
+            }
+        }
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = [
+        "invalid-csrf,                        403, ",
+        "${TestCsrfTokenProvider.CSRF_TOKEN}, 200, ${TestCsrfTokenProvider.CSRF_TOKEN}"
+    ])
+    fun `post logout responses`(csrf: String, expectedHttpStatusCode: Int, expectedResponseBody: String?) {
+        withLoggedKtorApp {
+            handleRequest(HttpMethod.Post, Route.LOGOUT.path) {
+                addHeader("X-CSRF", csrf)
             }.apply {
                 assertEquals(HttpStatusCode.fromValue(expectedHttpStatusCode), response.status())
                 assertEquals(expectedResponseBody, response.content)
