@@ -6,6 +6,10 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
 import io.ktor.server.testing.*
+import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.parse
+import kotlinx.serialization.stringify
+import me.agaman.ramona.Serializer
 import me.agaman.ramona.di.MainModule
 import me.agaman.ramona.module
 import me.agaman.ramona.route.Route
@@ -63,4 +67,20 @@ internal abstract class RamonaIntegrationTest : KoinTest {
         }
         test()
     }
+
+    fun TestApplicationEngine.handleApiRequest(method: HttpMethod, uri: String, setup: TestApplicationRequest.() -> Unit = {}): TestApplicationCall =
+        handleRequest(method, uri) {
+            addHeader("X-CSRF", TestCsrfTokenProvider.CSRF_TOKEN)
+            setup()
+        }
+
+    @OptIn(ImplicitReflectionSerializer::class)
+    inline fun <reified T : Any> TestApplicationRequest.setJsonBody(value: T) {
+        addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+        setBody(Serializer.json.stringify(value))
+    }
+
+    @OptIn(ImplicitReflectionSerializer::class)
+    inline fun <reified T : Any> TestApplicationResponse.getJsonContent(): T =
+        Serializer.json.parse(content ?: throw NoSuchElementException("The request doesn't has any content"))
 }
