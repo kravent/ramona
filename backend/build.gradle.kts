@@ -31,10 +31,10 @@ dependencies {
     implementation("com.h2database:h2:1.4.200")
     implementation("org.koin:koin-ktor:2.1.5")
 
+    testImplementation(kotlin("test-junit5"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.2")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.6.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.2")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.koin:koin-test:2.1.5")
     testImplementation("io.mockk:mockk:1.10.0")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")

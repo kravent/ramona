@@ -20,7 +20,6 @@ object Serializer {
     private fun buildSerializer(value: Any): KSerializer<*> = when (value) {
         is JsonElement -> JsonElementSerializer
         is List<*> -> value.elementSerializer().list
-        is Array<*> -> value.firstOrNull()?.let { buildSerializer(it) } ?: String.serializer().list
         is Set<*> -> value.elementSerializer().set
         is Map<*, *> -> {
             val keySerializer = value.keys.elementSerializer()
