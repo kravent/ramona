@@ -5,12 +5,25 @@ import io.ktor.http.HttpStatusCode
 import me.agaman.ramona.model.*
 import me.agaman.ramona.test.RamonaIntegrationTest
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 internal class ApiRouterIntegrationTest : RamonaIntegrationTest() {
+    @ParameterizedTest
+    @ValueSource(strings = ["GET", "POST"])
+    fun `get route that doesn't exists`(method: HttpMethod) {
+        withLoggedKtorApp {
+            handleApiRequest(method, "/api/any/invalid/route").apply {
+                assertEquals(HttpStatusCode.NotFound, response.status())
+                assertNull(response.content)
+            }
+        }
+    }
+
     @Test
     fun `save standup ok`() {
         withLoggedKtorApp {
@@ -46,10 +59,7 @@ internal class ApiRouterIntegrationTest : RamonaIntegrationTest() {
                 setJsonBody(StandupSaveRequest(NEW_STANDUP.copy(startHour = 200)))
             }.apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                response.getJsonContent<StandupSaveResponse>().also { saveResponse ->
-                    assertNull(saveResponse.standup)
-                    assertEquals("An Standup already exists with the name '${NEW_STANDUP.name}'", saveResponse.error)
-                }
+                assertEquals(StandupSaveResponse(error = "An Standup already exists with the name '${NEW_STANDUP.name}'"), response.getJsonContent())
             }
         }
     }
@@ -59,10 +69,7 @@ internal class ApiRouterIntegrationTest : RamonaIntegrationTest() {
         withLoggedKtorApp {
             handleApiRequest(HttpMethod.Get, "/api/standup/get/1").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                response.getJsonContent<StandupGetResponse>().let { getResponse ->
-                    assertNull(getResponse.standup)
-                    assertEquals("Standup not found", getResponse.error)
-                }
+                assertEquals(StandupGetResponse(error = "Standup not found"), response.getJsonContent())
             }
         }
     }
@@ -76,10 +83,83 @@ internal class ApiRouterIntegrationTest : RamonaIntegrationTest() {
 
             handleApiRequest(HttpMethod.Get, "/api/standup/get/${savedStandup.id}").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                response.getJsonContent<StandupGetResponse>().let { getResponse ->
-                    assertNull(getResponse.error)
-                    assertEquals(savedStandup, getResponse.standup)
-                }
+                assertEquals(StandupGetResponse(standup = savedStandup), response.getJsonContent())
+            }
+        }
+    }
+
+    @Test
+    fun `get empty standups list`() {
+        withLoggedKtorApp {
+            handleApiRequest(HttpMethod.Get, "/api/standup/list").apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals(StandupListResponse(standups = emptyList()), response.getJsonContent())
+            }
+        }
+    }
+
+    @Test
+    fun `save and get standups list`() {
+        withLoggedKtorApp {
+            val savedStandup = handleApiRequest(HttpMethod.Post, "/api/standup/save") {
+                setJsonBody(StandupSaveRequest(NEW_STANDUP))
+            }.response.getJsonContent<StandupSaveResponse>().standup!!
+
+            handleApiRequest(HttpMethod.Get, "/api/standup/list").apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals(StandupListResponse(standups = listOf(savedStandup)), response.getJsonContent())
+            }
+        }
+    }
+
+    @Test
+    fun `public get`() {
+        withLoggedKtorApp {
+            handleApiRequest(HttpMethod.Get, "/api/standup/public_get/any-external-id").apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals(StandupPublicGetResponse(error = "Standup not found"), response.getJsonContent())
+            }
+        }
+    }
+
+    @Test
+    fun `save and do public get`() {
+        withLoggedKtorApp {
+            val savedStandup = handleApiRequest(HttpMethod.Post, "/api/standup/save") {
+                setJsonBody(StandupSaveRequest(NEW_STANDUP))
+            }.response.getJsonContent<StandupSaveResponse>().standup!!
+
+            handleApiRequest(HttpMethod.Get, "/api/standup/public_get/${savedStandup.externalId}").apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals(StandupPublicGetResponse(standup = savedStandup), response.getJsonContent())
+            }
+        }
+    }
+
+    @Test
+    fun `fill standup that is not found`() {
+        withLoggedKtorApp {
+            handleApiRequest(HttpMethod.Post, "/api/standup/fill") {
+                setJsonBody(StandupFillRequest("any-external-id", mapOf(1 to "Any response")))
+            }.apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals(StandupFillResponse(error = "Standup not found"), response.getJsonContent())
+            }
+        }
+    }
+
+    @Test
+    fun `save and fill standup`() {
+        withLoggedKtorApp {
+            val savedStandup = handleApiRequest(HttpMethod.Post, "/api/standup/save") {
+                setJsonBody(StandupSaveRequest(NEW_STANDUP))
+            }.response.getJsonContent<StandupSaveResponse>().standup!!
+
+            handleApiRequest(HttpMethod.Post, "/api/standup/fill") {
+                setJsonBody(StandupFillRequest(savedStandup.externalId, mapOf(1 to "Any response")))
+            }.apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals(StandupFillResponse(saved = true), response.getJsonContent())
             }
         }
     }
