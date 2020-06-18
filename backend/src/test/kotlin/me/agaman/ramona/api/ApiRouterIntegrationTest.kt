@@ -2,6 +2,7 @@ package me.agaman.ramona.api
 
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.server.testing.TestApplicationEngine
 import me.agaman.ramona.model.*
 import me.agaman.ramona.test.RamonaIntegrationTest
 import org.junit.jupiter.api.Test
@@ -51,10 +52,7 @@ internal class ApiRouterIntegrationTest : RamonaIntegrationTest() {
     @Test
     fun `save standup with a name that already exists`() {
         withLoggedKtorApp {
-            handleApiRequest(HttpMethod.Post, "/api/standup/save") {
-                setJsonBody(StandupSaveRequest(NEW_STANDUP))
-            }
-
+            callSaveStandupApiRequest()
             handleApiRequest(HttpMethod.Post, "/api/standup/save") {
                 setJsonBody(StandupSaveRequest(NEW_STANDUP.copy(startHour = 200)))
             }.apply {
@@ -77,10 +75,7 @@ internal class ApiRouterIntegrationTest : RamonaIntegrationTest() {
     @Test
     fun `save and get standup`() {
         withLoggedKtorApp {
-            val savedStandup = handleApiRequest(HttpMethod.Post, "/api/standup/save") {
-                setJsonBody(StandupSaveRequest(NEW_STANDUP))
-            }.response.getJsonContent<StandupSaveResponse>().standup!!
-
+            val savedStandup = callSaveStandupApiRequest()
             handleApiRequest(HttpMethod.Get, "/api/standup/get/${savedStandup.id}").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
                 assertEquals(StandupGetResponse(standup = savedStandup), response.getJsonContent())
@@ -101,10 +96,7 @@ internal class ApiRouterIntegrationTest : RamonaIntegrationTest() {
     @Test
     fun `save and get standups list`() {
         withLoggedKtorApp {
-            val savedStandup = handleApiRequest(HttpMethod.Post, "/api/standup/save") {
-                setJsonBody(StandupSaveRequest(NEW_STANDUP))
-            }.response.getJsonContent<StandupSaveResponse>().standup!!
-
+            val savedStandup = callSaveStandupApiRequest()
             handleApiRequest(HttpMethod.Get, "/api/standup/list").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
                 assertEquals(StandupListResponse(standups = listOf(savedStandup)), response.getJsonContent())
@@ -125,10 +117,7 @@ internal class ApiRouterIntegrationTest : RamonaIntegrationTest() {
     @Test
     fun `save and do public get`() {
         withLoggedKtorApp {
-            val savedStandup = handleApiRequest(HttpMethod.Post, "/api/standup/save") {
-                setJsonBody(StandupSaveRequest(NEW_STANDUP))
-            }.response.getJsonContent<StandupSaveResponse>().standup!!
-
+            val savedStandup = callSaveStandupApiRequest()
             handleApiRequest(HttpMethod.Get, "/api/standup/public_get/${savedStandup.externalId}").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
                 assertEquals(StandupPublicGetResponse(standup = savedStandup), response.getJsonContent())
@@ -151,10 +140,7 @@ internal class ApiRouterIntegrationTest : RamonaIntegrationTest() {
     @Test
     fun `save and fill standup`() {
         withLoggedKtorApp {
-            val savedStandup = handleApiRequest(HttpMethod.Post, "/api/standup/save") {
-                setJsonBody(StandupSaveRequest(NEW_STANDUP))
-            }.response.getJsonContent<StandupSaveResponse>().standup!!
-
+            val savedStandup = callSaveStandupApiRequest()
             handleApiRequest(HttpMethod.Post, "/api/standup/fill") {
                 setJsonBody(StandupFillRequest(savedStandup.externalId, mapOf(1 to "Any response")))
             }.apply {
@@ -163,6 +149,11 @@ internal class ApiRouterIntegrationTest : RamonaIntegrationTest() {
             }
         }
     }
+
+    private fun TestApplicationEngine.callSaveStandupApiRequest(standup: Standup = NEW_STANDUP): Standup =
+        handleApiRequest(HttpMethod.Post, "/api/standup/save") {
+            setJsonBody(StandupSaveRequest(standup))
+        }.response.getJsonContent<StandupSaveResponse>().standup!!
 
     companion object {
         private val NEW_STANDUP = Standup(
